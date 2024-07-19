@@ -1,95 +1,82 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client"
+import { useState } from "react";
+import { container } from "./styles/container";
+import { title } from "./styles/title";
+import { inputContainer } from "./styles/inputContainer";
+import { input } from "./styles/input";
+import { addBtn } from "./styles/addBtn";
+import { todos } from "./styles/todos";
+import { todosItem } from "./styles/todosItem";
+import { todosText } from "./styles/todosText";
+import { deleteBtn } from "./styles/deleteBtn";
+import { editBtn } from "./styles/editBtn";
+import { warningText } from "./styles/warningText";
 
-export default function Home() {
+export default function App() {
+  const [userInput, setUserInput] = useState('')
+  const [list, setList] = useState([])
+
+  const updateInput = (value) => {
+    setUserInput(value)
+  }
+
+  const addItem = () => {
+    if (userInput !== '') {
+      const userInputItem = {
+        id: Math.random(),
+        value: userInput,
+      }
+
+      setList([...list, userInputItem])
+      setUserInput('')
+    }
+  }
+
+  const deleteItem = (key) => {
+    const updateList =
+      list.filter((item) => item.id !== key)
+    setList(updateList)
+  }
+
+  const editItem = (index) => {
+    const editedTodo = prompt('Edit the ToDo')
+    if (editedTodo !== null && editedTodo !== '') {
+      const updateTodos = [...list]
+      updateTodos[index].value = editedTodo
+      setList(updateTodos)
+    }
+  }
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+    <div style={container()}>
+      <div style={title()}>TODO LIST</div>
+      <div style={inputContainer()}>
+        <input
+          style={input()}
+          placeholder="Add item..."
+          value={userInput}
+          onChange={(item) =>
+            updateInput(item.target.value)}
         />
+        <button style={addBtn()} onClick={addItem}>ADD</button>
       </div>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div style={todos()}>
+        {list.length > 0 ? (
+          list.map((item, index) => (
+            <div key={index} style={todosItem()}>
+              <span style={todosText()}>{item.value}</span>
+              <span>
+                <button style={deleteBtn()} onClick={() => deleteItem(item.id)}>Delete</button>
+                <button style={editBtn()} onClick={() => editItem(index)}>Edit</button>
+              </span>
+            </div>
+          ))
+        ) : (
+          <div style={warningText()}>No items in the list</div>
+        )}
       </div>
-    </main>
+    </div>
   );
 }
