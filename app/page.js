@@ -74,7 +74,7 @@ export default function App() {
             </div>
           ))
         ) : (
-          <div style={warningText()}>No items in the list</div>
+          <div style={warningText()}>No itemss in the list</div>
         )}
       </div>
     </div>
